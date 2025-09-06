@@ -1,0 +1,99 @@
+openapi: 3.0.3
+info:
+  title: Pricing Service API
+  version: 1.0.0
+  description: API para consultar el precio aplicable de un producto en una fecha determinada.
+
+servers:
+  - url: http://localhost:8080/api/v1
+
+paths:
+  /prices:
+    get:
+      summary: Obtener precio aplicable
+      description: Devuelve el precio aplicable para un producto, marca y fecha dada.
+      parameters:
+        - name: applicationDate
+          in: query
+          required: true
+          description: Fecha de aplicación en formato ISO-8601.
+          schema:
+            type: string
+            format: date-time
+          example: "2020-06-14T10:00:00Z"
+        - name: productId
+          in: query
+          required: true
+          description: Identificador del producto.
+          schema:
+            type: integer
+          example: 35455
+        - name: brandId
+          in: query
+          required: true
+          description: Identificador de la marca.
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Precio encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PriceResponse"
+              examples:
+                ejemplo1:
+                  summary: Precio válido en franja horaria 1
+                  value:
+                    productId: 35455
+                    brandId: 1
+                    priceList: 1
+                    startDate: "2020-06-14T00:00:00Z"
+                    endDate: "2020-12-31T23:59:59Z"
+                    price: 35.50
+                    currency: "EUR"
+        "404":
+          description: No se encontró un precio aplicable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "No price found for given parameters"
+        "400":
+          description: Petición inválida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                message: "Invalid request parameters"
+
+components:
+  schemas:
+    PriceResponse:
+      type: object
+      properties:
+        productId:
+          type: integer
+        brandId:
+          type: integer
+        priceList:
+          type: integer
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        price:
+          type: number
+          format: double
+        currency:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
