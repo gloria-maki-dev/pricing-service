@@ -6,7 +6,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity @Table(name = "PRICES")
-@Data @NoArgsConstructor @AllArgsConstructor @Builder
+@NoArgsConstructor
+@Getter @Setter
 public class JpaPriceEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
